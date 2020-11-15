@@ -1,17 +1,15 @@
 'use strict';
-const rule = require('../rules/readable-stringify');
+const stringifyRule = require('../rules/readable-stringify');
+const codeRule = require('../rules/no-code-from-string');
 const RuleTester = require("eslint").RuleTester;
 
 const ruleTester = new RuleTester();
 
-ruleTester.run('readable-stringify', rule, {
+ruleTester.run('readable-stringify', stringifyRule, {
     valid: [
         {
             code: 'JSON.stringify(item, null, 2);',
             options: [{ spacing: 2 }]
-        },
-        {
-            code: 'foo(10);'
         }
     ],
     invalid: [
@@ -24,6 +22,28 @@ ruleTester.run('readable-stringify', rule, {
             code: 'JSON.stringify({}, null, 3);',
             errors: [{ message: 'Calls to JSON.stringify must use an spacing of 2. ' +
                     'Please consider calling JSON.stringify(item, null, 2);' }]
+        }
+    ]
+});
+
+
+ruleTester.run('no-code-from-string', codeRule, {
+    valid: [
+        {
+            code: 'foo(10)'
+        },
+        {
+            code: 'function foo() { doSomething() }'
+        }
+    ],
+    invalid: [
+        {
+            code: 'eval("")',
+            errors: [{ message: 'Calls to eval() are not allowed.' }]
+        },
+        {
+            code: 'new Function({})',
+            errors: [{ message: 'Calling the Function constructor is not allowed.' }]
         }
     ]
 });

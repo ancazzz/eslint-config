@@ -4,6 +4,7 @@ module.exports = {
         ecmaVersion: 6
     },
     rules: {
-        'readable-stringify': ['error']
+        'readable-stringify': ['error'],
+        'no-code-from-string': ['error']
     }
 };

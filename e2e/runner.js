@@ -17,9 +17,14 @@ const cli = new CLIEngine({
 // Run the CLI on example.js
 const report = cli.executeOnFiles([Path.join(__dirname, 'example.js')]);
 
+// Check expected results for each rule
 const JSONResult = report.results[0].messages.find((item) => item.ruleId === 'readable-stringify');
 Assert.ok(JSONResult, 'Could not find a result for rule readable-stringify');
 Assert.deepStrictEqual(JSONResult.message,
     'Calls to JSON.stringify must take 3 arguments. Please consider calling JSON.stringify(item, null, 2);');
+
+const noStringCodeResult = report.results[0].messages.find((item) => item.ruleId === 'no-code-from-string');
+Assert.ok(noStringCodeResult, 'Could not find a result for rule no-code-from-string');
+Assert.deepStrictEqual(noStringCodeResult.message, 'Calls to eval() are not allowed.');
 
 
